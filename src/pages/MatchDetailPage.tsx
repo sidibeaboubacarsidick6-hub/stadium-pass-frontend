@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -12,7 +12,10 @@ import {
   Plus,
   TicketCheck,
 } from 'lucide-react';
-import { matches, faqItems, type TicketCategory } from '@/data/matches';
+import { faqItems } from '@/data/matches';
+import { getMatch } from '@/lib/api';
+import { adaptMatch, type UiMatch, type UiTicketCategory } from '@/lib/adapters';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -42,12 +45,49 @@ const availabilityConfig = {
 export function MatchDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const match = matches.find((m) => m.id === id);
 
-  const [selectedCategory, setSelectedCategory] = useState<TicketCategory | null>(null);
+  const [match, setMatch] = useState<UiMatch | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  const [selectedCategory, setSelectedCategory] = useState<UiTicketCategory | null>(null);
   const [quantity, setQuantity] = useState(1);
 
-  if (!match) {
+  useEffect(() => {
+    if (!id) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    getMatch(id)
+      .then((apiMatch) => {
+        if (cancelled) return;
+        setMatch(adaptMatch(apiMatch));
+        setNotFound(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error('Erreur MatchDetail:', err);
+        setNotFound(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-32">
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-brand" />
+        <span className="ml-3 text-muted-foreground">Chargement du match…</span>
+      </div>
+    );
+  }
+
+  if (notFound || !match) {
     return (
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-32 text-center">
         <h1 className="text-2xl font-bold">Match introuvable</h1>

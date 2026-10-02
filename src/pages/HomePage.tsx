@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search,
@@ -9,8 +10,10 @@ import {
   Smartphone,
   Headphones,
   TrendingUp,
+  Loader2,
 } from 'lucide-react';
-import { matches } from '@/data/matches';
+import { getMatches } from '@/lib/api';
+import { adaptMatch, type UiMatch } from '@/lib/adapters';
 import { MatchCard } from '@/components/MatchCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -59,7 +62,23 @@ const features = [
 ];
 
 export function HomePage() {
-  const featuredMatches = matches.filter((m) => m.featured).slice(0, 3);
+  const [matches, setMatches] = useState<UiMatch[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    getMatches()
+      .then((apiMatches) => {
+        if (!cancelled) setMatches(apiMatches.map(adaptMatch));
+      })
+      .catch((err) => console.error('Erreur HomePage:', err))
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  const featuredMatches = matches.slice(0, 3);
   const upcomingMatches = matches.slice(0, 6);
 
   return (
@@ -82,7 +101,7 @@ export function HomePage() {
               <span className="block text-orange-brand">au cœur du stade</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">
-              Réservez vos billets pour les plus grands matchs de football en France. Choix des places sur plan interactif, paiement sécurisé, billets instantanés.
+              Réservez vos billets pour les plus grands matchs de football. Choix des places sur plan interactif, paiement sécurisé, billets instantanés.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/matches">
@@ -129,11 +148,22 @@ export function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-emerald-brand" />
+            <span className="ml-3 text-muted-foreground">Chargement des matchs…</span>
+          </div>
+        ) : featuredMatches.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredMatches.map((match) => (
+              <MatchCard key={match.id} match={match} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-border py-16 text-center text-muted-foreground">
+            Aucun match pour le moment.
+          </div>
+        )}
       </section>
 
       {/* How it works */}
@@ -172,11 +202,13 @@ export function HomePage() {
           <p className="mt-2 text-muted-foreground">Toutes les rencontres à venir</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {upcomingMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
-          ))}
-        </div>
+        {!loading && upcomingMatches.length > 0 && (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {upcomingMatches.map((match) => (
+              <MatchCard key={match.id} match={match} />
+            ))}
+          </div>
+        )}
 
         <div className="mt-10 text-center">
           <Link to="/matches">
