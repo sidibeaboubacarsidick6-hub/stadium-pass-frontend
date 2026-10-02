@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 150 15% 97%;
+    --foreground: 0 0% 5%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+    --primary: 155 83% 20%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 150 10% 95%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 150 10% 94%;
+    --muted-foreground: 150 5% 42%;
+    --accent: 22 100% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 150 10% 88%;
+    --input: 150 10% 88%;
+    --ring: 155 83% 20%;
+    --chart-1: 155 83% 20%;
+    --chart-2: 22 100% 58%;
+    --chart-3: 200 70% 50%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 340 75% 55%;
+    --radius: 0.625rem;
+
+    --emerald: #0a5c3a;
+    --emerald-light: #0d7a4f;
+    --emerald-dark: #053d27;
+    --orange: #ff7a2b;
+    --orange-light: #ff9559;
+    --orange-dark: #e0641a;
+    --black: #0d0d0d;
+    --gray-light: #f5f7f5;
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 155 83% 28%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 22 100% 58%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 155 83% 28%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .text-emerald-brand { color: #0a5c3a; }
+  .bg-emerald-brand { background-color: #0a5c3a; }
+  .bg-orange-brand { background-color: #ff7a2b; }
+  .text-orange-brand { color: #ff7a2b; }
+  .bg-black-brand { background-color: #0d0d0d; }
+  .bg-gray-light-brand { background-color: #f5f7f5; }
+
+  .gradient-emerald {
+    background: linear-gradient(135deg, #0a5c3a 0%, #0d7a4f 100%);
+  }
+  .gradient-hero {
+    background: linear-gradient(135deg, #053d27 0%, #0a5c3a 50%, #0d7a4f 100%);
+  }
+  .gradient-orange {
+    background: linear-gradient(135deg, #ff7a2b 0%, #ff9559 100%);
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .stadium-section {
+    transition: fill 0.2s ease, stroke 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+  }
+  .stadium-section:hover {
+    opacity: 0.85;
+  }
+}
