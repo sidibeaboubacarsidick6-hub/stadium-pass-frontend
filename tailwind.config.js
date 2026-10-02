@@ -68,6 +68,10 @@ export default {
           light: '#ff9559',
           dark: '#e0641a',
         },
+        cta: {
+          DEFAULT: '#ff7a2b',
+          foreground: '#ffffff',
+        },
         black: {
           brand: '#0d0d0d',
         },
