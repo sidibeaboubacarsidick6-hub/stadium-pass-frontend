@@ -110,3 +110,46 @@ export function formatTime(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 }
+
+
+// ── Commande ──────────────────────────────────────────
+export interface OrderResponse {
+  id: number;
+  uuid: string;
+  order_number: string;
+  status: string;
+  subtotal: number;
+  fees: number;
+  total: number;
+  guest_first_name: string;
+  guest_last_name: string;
+  guest_email: string;
+  created_at: string;
+}
+
+export interface CreateOrderPayload {
+  match_uuid: string;
+  category_id: number;
+  quantity: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  payment_method: string;
+}
+
+export async function createOrder(payload: CreateOrderPayload): Promise<OrderResponse> {
+  const res = await fetch(`${API_URL}/orders/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.error || error.detail || `Erreur ${res.status}`);
+  }
+  return res.json();
+}

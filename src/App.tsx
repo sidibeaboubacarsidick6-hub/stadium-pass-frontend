@@ -9,6 +9,7 @@ import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
 import { MyTicketsPage } from '@/pages/MyTicketsPage';
 import { ScannerPage } from '@/pages/ScannerPage';
+import { CheckoutPage } from '@/pages/CheckoutPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
 	    <Route path="/my-tickets" element={<MyTicketsPage />} />
 	    <Route path="/scanner" element={<ScannerPage />} />
+      <Route path="/checkout/:uuid" element={<CheckoutPage />} />
           </Routes>
         </main>
         <Footer />
