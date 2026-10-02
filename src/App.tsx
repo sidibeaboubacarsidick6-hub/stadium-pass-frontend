@@ -8,6 +8,7 @@ import { MatchDetailPage } from '@/pages/MatchDetailPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
 import { MyTicketsPage } from '@/pages/MyTicketsPage';
+import { ScannerPage } from '@/pages/ScannerPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 	    <Route path="/my-tickets" element={<MyTicketsPage />} />
+	    <Route path="/scanner" element={<ScannerPage />} />
           </Routes>
         </main>
         <Footer />
