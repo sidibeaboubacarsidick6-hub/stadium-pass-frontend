@@ -7,6 +7,7 @@ import { MatchListPage } from '@/pages/MatchListPage';
 import { MatchDetailPage } from '@/pages/MatchDetailPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
+import { MyTicketsPage } from '@/pages/MyTicketsPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/matches/:id" element={<MatchDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+	    <Route path="/my-tickets" element={<MyTicketsPage />} />
           </Routes>
         </main>
         <Footer />
