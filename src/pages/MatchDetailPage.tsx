@@ -111,18 +111,22 @@ export function MatchDetailPage() {
   const handleAddToCart = () => {
     if (!selectedCategory) return;
     if (selectedCategory.availability === 'soldout') return;
-    toast.success(`${quantity} billet${quantity > 1 ? 's' : ''} ${selectedCategory.name} ajouté${quantity > 1 ? 's' : ''} au panier`, {
-      description: `${match.homeTeamShort} vs ${match.awayTeamShort} — ${(selectedCategory.price * quantity).toFixed(0)}€`,
+    toast.success(`${quantity} billet${quantity > 1 ? 's' : ''} ${selectedCategory.name}`, {
+      description: `${match.homeTeamShort} vs ${match.awayTeamShort} — ${(selectedCategory.price * quantity).toLocaleString('fr-FR')} FCFA`,
     });
   };
 
   const handleBuyNow = () => {
     if (!selectedCategory) return;
     if (selectedCategory.availability === 'soldout') return;
+    if (!match) return;
+
     toast.success('Redirection vers le paiement...', {
-      description: `${quantity} × ${selectedCategory.name} — ${(selectedCategory.price * quantity).toFixed(0)}€`,
+      description: `${quantity} × ${selectedCategory.name} — ${(selectedCategory.price * quantity).toLocaleString('fr-FR')} FCFA`,
     });
-    setTimeout(() => navigate('/login'), 1200);
+    setTimeout(() => {
+      navigate(`/checkout/${match.id}?category=${selectedCategory.id}&quantity=${quantity}`);
+    }, 800);
   };
 
   const totalPrice = selectedCategory ? selectedCategory.price * quantity : 0;
