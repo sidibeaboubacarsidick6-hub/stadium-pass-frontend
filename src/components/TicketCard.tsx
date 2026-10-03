@@ -35,6 +35,10 @@ export interface TicketCardProps {
   ticketNumber: string
   qrData?: string
   className?: string
+  // 🆕 Actions
+  onDownloadPdf?: () => void
+  onAddToCalendar?: () => void
+  onPrint?: () => void
 }
 
 const categoryStyles: Record<TicketCategory, string> = {
@@ -70,6 +74,9 @@ export function TicketCard({
   ticketNumber,
   qrData,
   className,
+  onDownloadPdf,
+  onAddToCalendar,
+  onPrint,
 }: TicketCardProps) {
   return (
     <article
@@ -168,14 +175,26 @@ export function TicketCard({
           <div className="mt-5 flex flex-col gap-2">
             <Button
               variant="outline"
+              onClick={onDownloadPdf}
               className="h-11 w-full border-white/25 bg-transparent text-white hover:border-white/50 hover:bg-white/10 hover:text-white"
             >
               <Download aria-hidden="true" />
               Télécharger PDF
             </Button>
-            <Button variant="ghost" className="h-11 w-full text-emerald-200 hover:bg-emerald-400/10 hover:text-emerald-100">
+            <Button
+              variant="ghost"
+              onClick={onAddToCalendar}
+              className="h-11 w-full text-emerald-200 hover:bg-emerald-400/10 hover:text-emerald-100"
+            >
               <CalendarPlus aria-hidden="true" />
               Ajouter au calendrier
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={onPrint}
+              className="h-11 w-full text-white/60 hover:bg-white/5 hover:text-white"
+            >
+              🖨️ Imprimer
             </Button>
           </div>
         </div>
