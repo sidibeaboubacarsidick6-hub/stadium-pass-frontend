@@ -153,3 +153,80 @@ export async function createOrder(payload: CreateOrderPayload): Promise<OrderRes
   }
   return res.json();
 }
+
+// ── Authentification ──────────────────────────────────
+import {
+  setTokens,
+  setUser,
+  clearAuth,
+  getAuthHeaders,
+  type AuthUser,
+} from './auth';
+
+export interface RegisterPayload {
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone?: string;
+  password: string;
+  password_confirm: string;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access: string;
+  refresh: string;
+  user: AuthUser;
+}
+
+export async function registerUser(payload: RegisterPayload): Promise<AuthUser> {
+  const res = await fetch(`${API_URL}/auth/register/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    // Récupère le premier message d'erreur
+    const firstKey = Object.keys(error)[0];
+    const msg = firstKey ? `${firstKey}: ${error[firstKey]}` : `Erreur ${res.status}`;
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
+  const res = await fetch(`${API_URL}/auth/login/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    throw new Error('Email ou mot de passe incorrect.');
+  }
+  const data: LoginResponse = await res.json();
+  setTokens(data.access, data.refresh);
+  setUser(data.user);
+  return data;
+}
+
+export async function getMe(): Promise<AuthUser> {
+  const res = await fetch(`${API_URL}/auth/me/`, {
+    headers: { Accept: 'application/json', ...getAuthHeaders() },
+  });
+  if (!res.ok) {
+    clearAuth();
+    throw new Error('Session expirée.');
+  }
+  const user = await res.json();
+  setUser(user);
+  return user;
+}
+
+export function logout() {
+  clearAuth();
+}
