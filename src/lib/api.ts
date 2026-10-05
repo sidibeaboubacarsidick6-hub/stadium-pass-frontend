@@ -283,3 +283,17 @@ export async function getMyTickets(): Promise<Ticket[]> {
   }
   return res.json();
 }
+
+// ── Téléchargement PDF billet ─────────────────────────
+export async function downloadTicketPdf(ticketUuid: string): Promise<Blob> {
+  const res = await fetch(`${API_URL}/tickets/${ticketUuid}/pdf/`, {
+    headers: { ...getAuthHeaders() },
+  });
+  if (res.status === 401) {
+    throw new Error('UNAUTHORIZED');
+  }
+  if (!res.ok) {
+    throw new Error(`Erreur ${res.status}`);
+  }
+  return res.blob();
+}

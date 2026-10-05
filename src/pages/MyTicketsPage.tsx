@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Loader2, Ticket as TicketIcon } from 'lucide-react';
-import { getMyTickets, type Ticket } from '@/lib/api';
+import { getMyTickets, downloadTicketPdf, type Ticket } from '@/lib/api';
 import { isAuthenticated } from '@/lib/auth';
 import { ticketToCardProps } from '@/lib/ticket-adapter';
 import { downloadIcs } from '@/lib/ics';
@@ -54,9 +54,23 @@ export function MyTicketsPage() {
     toast.success('Événement ajouté à votre calendrier');
   };
 
-  const handleDownloadPdf = (t: Ticket) => {
-    toast.info(`PDF du billet ${t.ticket_number} — bientôt disponible`);
-  };
+  const handleDownloadPdf = async (t: Ticket) => {
+  try {
+    const blob = await downloadTicketPdf(t.uuid);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `billet-${t.ticket_number}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast.success('PDF téléchargé');
+  } catch (err) {
+    console.error('Erreur PDF:', err);
+    toast.error('Impossible de télécharger le PDF');
+  }
+};
 
   const handlePrint = () => {
     window.print();
