@@ -230,3 +230,56 @@ export async function getMe(): Promise<AuthUser> {
 export function logout() {
   clearAuth();
 }
+
+
+// ── Paiement simulé (V1) ──────────────────────────────
+export async function simulatePayment(uuid: string): Promise<OrderResponse> {
+  const res = await fetch(`${API_URL}/orders/${uuid}/simulate-pay/`, {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.error || `Erreur paiement ${res.status}`);
+  }
+  return res.json();
+}
+
+
+// ── Mes billets ───────────────────────────────────────
+export interface Ticket {
+  id: number;
+  uuid: string;
+  ticket_number: string;
+  match_title: string;
+  home_team: string;
+  away_team: string;
+  kickoff_at: string;
+  venue_name: string;
+  venue_city: string;
+  category_name: string;
+  category_price: string;
+  gate_label: string;
+  block_label: string;
+  holder_name: string;
+  holder_email: string;
+  holder_phone: string;
+  qr_token: string;
+  qr_data: string;
+  qr_code_image_url: string | null;
+  status: string;
+  created_at: string;
+}
+
+export async function getMyTickets(): Promise<Ticket[]> {
+  const res = await fetch(`${API_URL}/my-tickets/`, {
+    headers: { Accept: 'application/json', ...getAuthHeaders() },
+  });
+  if (res.status === 401) {
+    throw new Error('UNAUTHORIZED');
+  }
+  if (!res.ok) {
+    throw new Error(`Erreur ${res.status}`);
+  }
+  return res.json();
+}

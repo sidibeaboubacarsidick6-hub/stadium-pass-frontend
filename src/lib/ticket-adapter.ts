@@ -33,7 +33,9 @@ function stripPrefix(label: string, prefixes: string[]): string {
   return label;
 }
 
-export function ticketToCardProps(t: Ticket): Omit<TicketCardProps, 'className'> {
+export function ticketToCardProps(
+  t: Ticket,
+): Omit<TicketCardProps, 'className' | 'onDownloadPdf' | 'onAddToCalendar' | 'onPrint'> {
   return {
     matchTitle: t.match_title,
     teamA: t.home_team,
@@ -42,11 +44,12 @@ export function ticketToCardProps(t: Ticket): Omit<TicketCardProps, 'className'>
     time: formatTime(t.kickoff_at),
     venue: `${t.venue_name}, ${t.venue_city}`,
     category: normalizeCategory(t.category_name),
-    seat: '',      // non fourni par l'API pour l'instant
-    row: '',       // idem
+    seat: '',
+    row: '',
     gate: stripPrefix(t.gate_label, ['Porte ', 'Porte']),
     block: stripPrefix(t.block_label, ['Bloc ', 'Bloc', 'Tribune ']),
     ticketNumber: t.ticket_number,
     qrData: t.qr_data,
+    qrImageUrl: t.qr_code_image_url,
   };
 }

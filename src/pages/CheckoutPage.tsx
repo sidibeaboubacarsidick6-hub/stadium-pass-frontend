@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Loader2 } from 'lucide-react'
-import { getMatch, createOrder } from '@/lib/api'
+import { getMatch, createOrder, simulatePayment } from '@/lib/api'
 import { CheckoutFlow } from '@/components/checkout/checkout-flow'
 import type { MatchInfo, TicketCategory } from '@/components/checkout/types'
 import { Button } from '@/components/ui/button'
@@ -110,6 +110,8 @@ export function CheckoutPage() {
             phone: payload.phone,
             payment_method: payload.paymentMethod,
           })
+          // ⚠️ V1 : paiement simulé (marque PAID + génère billets)
+          await simulatePayment(order.uuid)
           return {
             orderNumber: order.order_number,
             total: Number(order.total),

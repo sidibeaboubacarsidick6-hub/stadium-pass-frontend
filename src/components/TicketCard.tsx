@@ -34,6 +34,7 @@ export interface TicketCardProps {
   block: string
   ticketNumber: string
   qrData?: string
+  qrImageUrl?: string | null
   className?: string
   // 🆕 Actions
   onDownloadPdf?: () => void
@@ -73,6 +74,7 @@ export function TicketCard({
   block,
   ticketNumber,
   qrData,
+  qrImageUrl,
   className,
   onDownloadPdf,
   onAddToCalendar,
@@ -146,7 +148,15 @@ export function TicketCard({
 
           <div className="flex justify-center">
             <div className="rounded-xl bg-white p-3 shadow-[0_0_0_6px_rgba(255,255,255,0.06)] transition-transform duration-300 group-hover:scale-[1.03]">
-              <TicketQrPlaceholder seed={qrData ?? ticketNumber} />
+              {qrImageUrl ? (
+                <img
+                  src={qrImageUrl}
+                  alt={`QR code du billet ${ticketNumber}`}
+                  className="aspect-square w-full max-w-[180px] rounded-lg"
+                />
+              ) : (
+                <TicketQrPlaceholder seed={qrData ?? ticketNumber} />
+              )}
             </div>
           </div>
 

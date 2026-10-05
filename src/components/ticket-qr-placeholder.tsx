@@ -2,11 +2,11 @@ import { QrCode } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface TicketQrPlaceholderProps {
-  data?: string
+  seed?: string
   className?: string
 }
 
-export function TicketQrPlaceholder({ data, className }: TicketQrPlaceholderProps) {
+export function TicketQrPlaceholder({ seed, className }: TicketQrPlaceholderProps) {
   return (
     <div
       className={cn(

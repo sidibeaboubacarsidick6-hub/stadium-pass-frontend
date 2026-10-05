@@ -2,10 +2,11 @@ import { cn } from '@/lib/utils'
 
 interface TeamCrestProps {
   name: string
+  tone?: 'home' | 'away'
   className?: string
 }
 
-export function TeamCrest({ name, className }: TeamCrestProps) {
+export function TeamCrest({ name, tone = 'home', className }: TeamCrestProps) {
   // Récupère les 2-3 premières lettres significatives
   const initials = name
     .split(' ')
@@ -18,7 +19,10 @@ export function TeamCrest({ name, className }: TeamCrestProps) {
   return (
     <div
       className={cn(
-        'flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/20 bg-gradient-to-br from-white/15 to-white/5 shadow-lg backdrop-blur-sm',
+        'flex h-14 w-14 items-center justify-center rounded-full border-2 shadow-lg backdrop-blur-sm',
+        tone === 'home'
+          ? 'border-emerald-400/40 bg-gradient-to-br from-emerald-400/20 to-emerald-600/10'
+          : 'border-orange-400/40 bg-gradient-to-br from-orange-400/20 to-orange-600/10',
         className
       )}
     >
