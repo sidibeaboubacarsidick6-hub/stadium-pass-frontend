@@ -1,2 +1,6 @@
 export { OrganizerLayout } from './OrganizerLayout'
 export { DashboardPage } from './DashboardPage'
+export { OrganizerMatchesPage } from './OrganizerMatchesPage'
+export { OrganizerCompetitionsPage } from './OrganizerCompetitionsPage'
+export { OrganizerVenuesPage } from './OrganizerVenuesPage'
+export { OrganizerTeamsPage } from './OrganizerTeamsPage'

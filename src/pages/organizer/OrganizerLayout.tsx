@@ -18,6 +18,7 @@ const NAV_ITEMS = [
 export function OrganizerLayout() {
   const navigate = useNavigate()
   const user = getUser()
+  console.log('[OrganizerLayout]', { user, isOrg: isOrganizer() })
 
   useEffect(() => {
     if (!user) {

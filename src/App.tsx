@@ -10,7 +10,14 @@ import { RegisterPage } from '@/pages/RegisterPage';
 import { MyTicketsPage } from '@/pages/MyTicketsPage';
 import { ScannerPage } from '@/pages/ScannerPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
-import { OrganizerLayout, DashboardPage } from '@/pages/organizer'
+import {
+  OrganizerLayout,
+  DashboardPage,
+  OrganizerMatchesPage,
+  OrganizerCompetitionsPage,
+  OrganizerVenuesPage,
+  OrganizerTeamsPage,
+} from '@/pages/organizer';
 
 function App() {
   return (
@@ -24,12 +31,18 @@ function App() {
             <Route path="/matches/:id" element={<MatchDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-	    <Route path="/my-tickets" element={<MyTicketsPage />} />
-	    <Route path="/scanner" element={<ScannerPage />} />
-      <Route path="/checkout/:uuid" element={<CheckoutPage />} />
-<Route path="/organizer" element={<OrganizerLayout />}>
-  <Route index element={<DashboardPage />} />
-</Route>
+            <Route path="/my-tickets" element={<MyTicketsPage />} />
+            <Route path="/scanner" element={<ScannerPage />} />
+            <Route path="/checkout/:uuid" element={<CheckoutPage />} />
+
+            {/* Espace organisateur */}
+            <Route path="/organizer" element={<OrganizerLayout />}>
+              <Route index element={<DashboardPage />} />
+              <Route path="matches" element={<OrganizerMatchesPage />} />
+              <Route path="competitions" element={<OrganizerCompetitionsPage />} />
+              <Route path="venues" element={<OrganizerVenuesPage />} />
+              <Route path="teams" element={<OrganizerTeamsPage />} />
+            </Route>
           </Routes>
         </main>
         <Footer />

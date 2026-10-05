@@ -120,3 +120,44 @@ export async function getOrganizerTeams(): Promise<OrganizerTeam[]> {
   const data = await orgFetch<Paginated<OrganizerTeam>>('/organizer/teams/');
   return data.results;
 }
+
+// ── Création rapide ──────────────────────────────────
+export interface CompetitionCreatePayload {
+  name: string;
+  type?: string;
+}
+
+export interface VenueCreatePayload {
+  name: string;
+  city: string;
+  address?: string;
+  capacity?: number;
+}
+
+export interface TeamCreatePayload {
+  name: string;
+  short_name: string;
+  city?: string;
+  logo_url?: string;
+}
+
+export async function createCompetition(payload: CompetitionCreatePayload): Promise<OrganizerCompetition> {
+  return orgFetch('/organizer/competitions/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createVenue(payload: VenueCreatePayload): Promise<OrganizerVenue> {
+  return orgFetch('/organizer/venues/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createTeam(payload: TeamCreatePayload): Promise<OrganizerTeam> {
+  return orgFetch('/organizer/teams/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
