@@ -8,6 +8,13 @@ const REFRESH_KEY = 'stadium_refresh_token';
 const USER_KEY = 'stadium_user';
 const AUTH_CHANGE_EVENT = 'stadium-auth-change';
 
+export interface AuthOrganization {
+  id: number;
+  uuid: string;
+  name: string;
+  slug: string;
+}
+
 export interface AuthUser {
   id: number;
   uuid: string;
@@ -17,6 +24,8 @@ export interface AuthUser {
   phone: string;
   role: string;
   full_name: string;
+  is_organizer: boolean;
+  organization: AuthOrganization | null;
   date_joined: string;
 }
 
@@ -76,4 +85,10 @@ export function isAuthenticated(): boolean {
 export function getAuthHeaders(): Record<string, string> {
   const token = getToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+// ── Organizer helpers ─────────────────────────────────
+export function isOrganizer(): boolean {
+  const user = getUser();
+  return !!user?.is_organizer && !!user.organization;
 }

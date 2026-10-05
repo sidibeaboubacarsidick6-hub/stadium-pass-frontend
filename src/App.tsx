@@ -10,6 +10,7 @@ import { RegisterPage } from '@/pages/RegisterPage';
 import { MyTicketsPage } from '@/pages/MyTicketsPage';
 import { ScannerPage } from '@/pages/ScannerPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
+import { OrganizerLayout, DashboardPage } from '@/pages/organizer'
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
 	    <Route path="/my-tickets" element={<MyTicketsPage />} />
 	    <Route path="/scanner" element={<ScannerPage />} />
       <Route path="/checkout/:uuid" element={<CheckoutPage />} />
+<Route path="/organizer" element={<OrganizerLayout />}>
+  <Route index element={<DashboardPage />} />
+</Route>
           </Routes>
         </main>
         <Footer />
