@@ -9,11 +9,19 @@ import {
   type OrganizerTeam,
 } from '@/lib/organizer-api'
 
+const EMPTY_FORM = {
+  name: '',
+  short_name: '',
+  city: '',
+  founded_year: '',
+  president_name: '',
+}
+
 export function OrganizerTeamsPage() {
   const [items, setItems] = useState<OrganizerTeam[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ name: '', short_name: '', city: '', logo_url: '' })
+  const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -33,10 +41,11 @@ export function OrganizerTeamsPage() {
         name: form.name.trim(),
         short_name: form.short_name.trim().toUpperCase(),
         city: form.city.trim() || undefined,
-        logo_url: form.logo_url.trim() || undefined,
+        founded_year: form.founded_year ? Number(form.founded_year) : undefined,
+        president_name: form.president_name.trim() || undefined,
       })
       setItems((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)))
-      setForm({ name: '', short_name: '', city: '', logo_url: '' })
+      setForm(EMPTY_FORM)
       setShowForm(false)
     } catch (e) {
       setError((e as Error).message)
@@ -84,10 +93,16 @@ export function OrganizerTeamsPage() {
                   placeholder="Abidjan" />
               </div>
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="t-logo">URL du logo</Label>
-                <Input id="t-logo" type="url" value={form.logo_url}
-                  onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
-                  placeholder="https://…" />
+                <Label htmlFor="t-founded">Année de fondation</Label>
+                <Input id="t-founded" type="number" min="1900" max="2100" value={form.founded_year}
+                  onChange={(e) => setForm({ ...form, founded_year: e.target.value })}
+                  placeholder="1948" />
+              </div>
+              <div className="flex flex-col gap-1.5 sm:col-span-2">
+                <Label htmlFor="t-president">Président</Label>
+                <Input id="t-president" value={form.president_name}
+                  onChange={(e) => setForm({ ...form, president_name: e.target.value })}
+                  placeholder="Nom du président" />
               </div>
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
@@ -116,6 +131,7 @@ export function OrganizerTeamsPage() {
                 <th className="px-4 py-3 font-medium">Nom</th>
                 <th className="px-4 py-3 font-medium">Code</th>
                 <th className="px-4 py-3 font-medium">Ville</th>
+                <th className="px-4 py-3 font-medium">Fondation</th>
               </tr>
             </thead>
             <tbody>
@@ -124,6 +140,7 @@ export function OrganizerTeamsPage() {
                   <td className="px-4 py-3 font-medium">{t.name}</td>
                   <td className="px-4 py-3 text-muted-foreground font-mono">{t.short_name}</td>
                   <td className="px-4 py-3 text-muted-foreground">{t.city || '—'}</td>
+                  <td className="px-4 py-3 text-muted-foreground tabular-nums">{t.founded_year || '—'}</td>
                 </tr>
               ))}
             </tbody>

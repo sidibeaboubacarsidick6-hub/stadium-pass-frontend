@@ -17,6 +17,7 @@ import {
   OrganizerCompetitionsPage,
   OrganizerVenuesPage,
   OrganizerTeamsPage,
+  MatchFormPage
 } from '@/pages/organizer';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
             <Route path="/organizer" element={<OrganizerLayout />}>
               <Route index element={<DashboardPage />} />
               <Route path="matches" element={<OrganizerMatchesPage />} />
+              <Route path="matches/new" element={<MatchFormPage />} />
               <Route path="competitions" element={<OrganizerCompetitionsPage />} />
               <Route path="venues" element={<OrganizerVenuesPage />} />
               <Route path="teams" element={<OrganizerTeamsPage />} />

@@ -6,6 +6,13 @@ import { getAuthHeaders } from './auth';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 // ── Types ─────────────────────────────────────────────
+interface Paginated<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 export interface OrganizerDashboard {
   organization: { name: string; slug: string };
   matches: { total: number; upcoming: number };
@@ -31,6 +38,14 @@ export interface OrganizerMatch {
   tv_channel: string;
   description: string;
   tickets_sold: number;
+  ticket_categories?: {
+    id: number;
+    name: string;
+    price: string;
+    total_quantity: number;
+    quantity_sold: number;
+    remaining: number;
+  }[];
   created_at: string;
   updated_at: string;
 }
@@ -61,17 +76,13 @@ export interface OrganizerTeam {
   uuid: string;
   name: string;
   short_name: string;
+  slug: string;
   city: string;
-  logo_url: string | null;
+  founded_year: number | null;
+  president_name: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
-}
-
-interface Paginated<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
 }
 
 // ── Fetch helper ──────────────────────────────────────
@@ -90,7 +101,15 @@ async function orgFetch<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
-    throw new Error(error.detail || `Erreur ${res.status}`);
+    // DRF renvoie soit {detail}, soit {field: [errors]}
+    if (error.detail) throw new Error(error.detail);
+    const firstKey = Object.keys(error)[0];
+    if (firstKey) {
+      const v = error[firstKey];
+      const msg = Array.isArray(v) ? v[0] : String(v);
+      throw new Error(`${firstKey}: ${msg}`);
+    }
+    throw new Error(`Erreur ${res.status}`);
   }
   if (res.status === 204) return undefined as T;
   return res.json();
@@ -138,7 +157,8 @@ export interface TeamCreatePayload {
   name: string;
   short_name: string;
   city?: string;
-  logo_url?: string;
+  founded_year?: number;
+  president_name?: string;
 }
 
 export async function createCompetition(payload: CompetitionCreatePayload): Promise<OrganizerCompetition> {
@@ -157,6 +177,35 @@ export async function createVenue(payload: VenueCreatePayload): Promise<Organize
 
 export async function createTeam(payload: TeamCreatePayload): Promise<OrganizerTeam> {
   return orgFetch('/organizer/teams/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+// ── Création match complet ────────────────────────────
+export interface TicketCategoryPayload {
+  name: string;
+  price: number;
+  total_quantity: number;
+  max_per_order: number;
+  block_label?: string;
+  description?: string;
+}
+
+export interface MatchCreatePayload {
+  competition: number;
+  home_team: number;
+  away_team: number;
+  venue: number;
+  kickoff_at: string;
+  status: string;
+  tv_channel?: string;
+  description?: string;
+  ticket_categories: TicketCategoryPayload[];
+}
+
+export async function createMatch(payload: MatchCreatePayload): Promise<OrganizerMatch> {
+  return orgFetch('/organizer/matches/', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
