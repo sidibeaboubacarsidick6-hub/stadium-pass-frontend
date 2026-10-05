@@ -9,6 +9,7 @@ import { StepInformation } from './step-information'
 import { StepPayment } from './step-payment'
 import { StepSelection } from './step-selection'
 import { Stepper } from './stepper'
+import { SelectionRecap } from './selection-recap'
 import type { CheckoutFlowProps, CheckoutResult, CustomerInfo, PaymentMethodId } from './types'
 
 type Step = 1 | 2 | 3 | 4
@@ -29,7 +30,9 @@ export function CheckoutFlow({
   initialCategoryId,
   initialQuantity,
 }: CheckoutFlowProps & { initialCategoryId?: number; initialQuantity?: number }) {
-  const [step, setStep] = useState<Step>(1)
+  // Si une catégorie est déjà choisie (via URL), on saute l'étape Sélection
+  const hasPreselection = initialCategoryId != null && initialCategoryId > 0
+  const [step, setStep] = useState<Step>(hasPreselection ? 2 : 1)
   const [direction, setDirection] = useState(1)
   const [categoryId, setCategoryId] = useState<number | null>(initialCategoryId ?? null)
   const [quantity, setQuantity] = useState(initialQuantity ?? 2)
@@ -121,6 +124,14 @@ export function CheckoutFlow({
       </header>
 
       <div className="overflow-hidden px-5 py-6 sm:px-8 sm:py-8">
+        {(step === 2 || step === 3) && category && (
+          <SelectionRecap
+            match={match}
+            category={category}
+            quantity={quantity}
+            onEdit={() => goTo(1)}
+          />
+        )}
         <AnimatePresence mode="wait" custom={direction} initial={false}>
           <motion.div
             key={step}
@@ -183,4 +194,3 @@ export function CheckoutFlow({
 }
 
 export default CheckoutFlow
-
