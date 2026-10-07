@@ -63,15 +63,31 @@ export interface OrganizerCompetition {
   updated_at: string;
 }
 
+export interface VenueZone {
+  name: string;
+  capacity: number;
+  price_base: number;
+}
+
 export interface OrganizerVenue {
   id: number;
   uuid: string;
   name: string;
   city: string;
   address: string;
+  country: string;
   capacity: number;
+  zone_template: VenueZone[];
   created_at: string;
   updated_at: string;
+}
+
+export interface VenueCreatePayload {
+  name: string;
+  city: string;
+  address?: string;
+  capacity?: number;
+  zone_template?: VenueZone[];
 }
 
 export interface OrganizerTeam {

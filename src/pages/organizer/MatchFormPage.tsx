@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
-import { Loader2, Plus, Trash2, ArrowLeft } from 'lucide-react'
+import { Loader2, Plus, Trash2, ArrowLeft, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -136,6 +136,33 @@ export function MatchFormPage() {
 
   const ready = competitions.length > 0 && teams.length >= 2 && venues.length > 0
 
+  const selectedVenue = venues.find((v) => String(v.id) === form.venue) || null
+  const venueZones = selectedVenue?.zone_template ?? []
+  const canImportZones = venueZones.length > 0
+
+  const handleImportZones = () => {
+    if (!selectedVenue || venueZones.length === 0) return
+
+    const hasExistingData = categories.some((c) => c.name.trim() !== '')
+    if (hasExistingData) {
+      const ok = window.confirm(
+        `Remplacer les ${categories.length} catégorie(s) actuelle(s) par les ${venueZones.length} zone(s) du stade « ${selectedVenue.name} » ?`,
+      )
+      if (!ok) return
+    }
+
+    setCategories(
+      venueZones.map((z) => ({
+        name: z.name,
+        price: z.price_base,
+        total_quantity: z.capacity,
+        max_per_order: 5,
+        block_label: z.name,
+        description: '',
+      })),
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
@@ -228,16 +255,35 @@ export function MatchFormPage() {
           </Card>
 
           <Card className="flex flex-col gap-5 p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 className="text-base font-semibold">Catégories de billets</h2>
-                <p className="text-sm text-muted-foreground">Au moins une catégorie</p>
+                <p className="text-sm text-muted-foreground">
+                  Au moins une catégorie
+                  {canImportZones && selectedVenue && (
+                    <> • <span className="text-primary">{venueZones.length} zone{venueZones.length > 1 ? 's' : ''} dispo dans « {selectedVenue.name} »</span></>
+                  )}
+                </p>
               </div>
-              <Button type="button" variant="outline" size="sm" onClick={addCat}
-                disabled={categories.some((c) => !c.name.trim())} className="gap-2">
-                <Plus className="size-4" aria-hidden="true" />
-                Ajouter
-              </Button>
+              <div className="flex gap-2">
+                {canImportZones && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleImportZones}
+                    className="gap-2"
+                  >
+                    <Download className="size-4" aria-hidden="true" />
+                    Importer les zones
+                  </Button>
+                )}
+                <Button type="button" variant="outline" size="sm" onClick={addCat}
+                  disabled={categories.some((c) => !c.name.trim())} className="gap-2">
+                  <Plus className="size-4" aria-hidden="true" />
+                  Ajouter
+                </Button>
+              </div>
             </div>
             <div className="flex flex-col gap-4">
               {categories.map((cat, idx) => (
