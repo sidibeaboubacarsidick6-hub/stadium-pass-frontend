@@ -41,10 +41,13 @@ export interface OrganizerMatch {
   ticket_categories?: {
     id: number;
     name: string;
+    description: string;
     price: string;
     total_quantity: number;
     quantity_sold: number;
     remaining: number;
+    max_per_order: number;
+    block_label: string;
   }[];
   created_at: string;
   updated_at: string;
@@ -209,4 +212,20 @@ export async function createMatch(payload: MatchCreatePayload): Promise<Organize
     method: 'POST',
     body: JSON.stringify(payload),
   });
+}
+
+// ── Édition / suppression match ───────────────────────
+export async function getOrganizerMatch(uuid: string): Promise<OrganizerMatch> {
+  return orgFetch(`/organizer/matches/${uuid}/`);
+}
+
+export async function updateMatch(uuid: string, payload: MatchCreatePayload): Promise<OrganizerMatch> {
+  return orgFetch(`/organizer/matches/${uuid}/`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteMatch(uuid: string): Promise<void> {
+  return orgFetch(`/organizer/matches/${uuid}/`, { method: 'DELETE' });
 }

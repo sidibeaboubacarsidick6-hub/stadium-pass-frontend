@@ -44,6 +44,7 @@ function App() {
               <Route path="competitions" element={<OrganizerCompetitionsPage />} />
               <Route path="venues" element={<OrganizerVenuesPage />} />
               <Route path="teams" element={<OrganizerTeamsPage />} />
+              <Route path="matches/:uuid/edit" element={<MatchFormPage />} />
             </Route>
           </Routes>
         </main>
